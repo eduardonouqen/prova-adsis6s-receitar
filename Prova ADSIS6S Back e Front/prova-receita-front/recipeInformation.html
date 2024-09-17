@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Prova - Receita</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="icon" type="icon/png" href="img/icon.png">
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+    <script>
+        function getRecipe() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        async function httpRequest() {
+            const recipeId = getRecipe();
+            const response = await axios.get(`http://localhost:3000/receita/${recipeId}`);
+            const receita = response.data;
+            document.querySelector('#name').value = receita.name;
+            document.querySelector('#tempoPreparo').value = receita.tempoPreparo;
+            document.querySelector('#custoAproximado').value = receita.custoAproximado;
+            const ingredientsNames = receita.ingrediente.map(ing => ing.name).join(', ');
+            document.querySelector('#ingrediente').value = ingredientsNames;
+        }
+        window.onload = httpRequest;
+
+        async function httpRequestPut() {
+            const recipeId = getRecipe();
+            const name = document.getElementById('name').value;
+            const tempoPreparo = document.getElementById('tempoPreparo').value;
+            const custoAproximado = document.getElementById('custoAproximado').value;
+            const ingredientesString = document.getElementById('ingrediente').value;
+            const ingredientesArray = ingredientesString.split(',').map(ing => ing.trim());
+
+            const newIngredientsPromises = ingredientesArray.map(ing =>
+                axios.post("http://localhost:3000/ingrediente", { name: ing })
+            );
+
+            const response = await axios.get(`http://localhost:3000/receita/${recipeId}`);
+            const receita = response.data;
+            const ingredientes = receita.ingrediente;
+
+            const deletePromises = ingredientes.map(ingrediente =>
+                axios.delete(`http://localhost:3000/ingrediente/${ingrediente._id}`)
+            );
+
+            await Promise.all(deletePromises);
+
+            const newIngredientsResponses = await Promise.all(newIngredientsPromises);
+
+            const newIngredientsId = newIngredientsResponses.map(response => ({
+                _id: response.data._id,
+                name: response.data.name
+            }));
+
+            const Receita = {
+                name: name,
+                tempoPreparo: tempoPreparo,
+                custoAproximado: custoAproximado,
+                ingrediente: newIngredientsId
+            };
+
+            await axios.put(`http://localhost:3000/receita/${recipeId}`, Receita);
+
+            alert("Receita atualizada com sucesso!");
+            window.location.href = './myRecipes.html';
+        }
+
+        async function httpRequestDelete() {
+            const recipeId = getRecipe();
+            const response = await axios.get(`http://localhost:3000/receita/${recipeId}`);
+            const receita = response.data;
+            const ingredientes = receita.ingrediente;
+
+            const deletePromises = ingredientes.map(ingrediente =>
+                axios.delete(`http://localhost:3000/ingrediente/${ingrediente._id}`)
+            );
+
+            await Promise.all(deletePromises);
+
+            await axios.delete(`http://localhost:3000/receita/${recipeId}`);
+
+            alert("Receita e ingredientes excluídos com sucesso!");
+            window.location.href = './myRecipes.html';
+        }
+    </script>
+</head>
+
+<body>
+
+    <img class="siteLogo" src="img/topSiteIcon.png">
+    <div class="squareInformations">
+        <label class="mainText">RECEITA</label>
+        <label class="textAreasTopText">Nome:</label>
+        <textarea id="name" class="textAreas"></textarea>
+        <label class="textAreasTopText">Tempo de Preparo (Minutos):</label>
+        <textarea id="tempoPreparo" class="textAreas"></textarea>
+        <label class="textAreasTopText">Custo Aproximado (R$):</label>
+        <textarea id="custoAproximado" class="textAreas"></textarea>
+        <label class="textAreasTopText">Ingredientes:</label>
+        <textarea id="ingrediente" class="textAreas"></textarea>
+        <button onclick="httpRequestPut()" class="otherButtons">ATUALIZAR</button>
+        <button onclick="httpRequestDelete()" class="otherButtons">EXCLUIR</button>
+        <a href="./myRecipes.html">
+            <button class="oneButton">MINHAS RECEITAS</button>
+        </a>
+    </div>
+
+</body>
+
+</html>
