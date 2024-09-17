@@ -16,3 +16,5 @@ Por: Eduardo de França Gonzalez - 22066203-2
 - HTML5
 - CSS3
 - Photoshop
+
+*Observação:* A utilização do JavaScript foi feita diretamente na parte de <script> do HTML5 pois não consegui fazer com que funcionasse em um arquivo separado, por conta disso o código pode ficar extenso e um pouco bagunçado.
