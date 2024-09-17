@@ -10,8 +10,8 @@ body {
 
 .squareInformations {
     background-color: #fefae0;
-    width: 550px;
-    height: 400px;
+    width: 650px;
+    height: 500px;
     border-radius: 40px;
     display: flex;
     flex-direction: column;
@@ -34,7 +34,7 @@ body {
     border-style: solid;
 }
 
-.registerButton {
+.oneButton {
     width: 455px;
     height: 30px;
     border-radius: 10px;
@@ -45,7 +45,7 @@ body {
     font-weight: bold;
 }
 
-.registerButton:hover {
+.oneButton:hover {
     width: 455px;
     height: 30px;
     border-radius: 10px;
@@ -56,10 +56,55 @@ body {
     font-weight: bold;
 }
 
+.otherButtons {
+    width: 455px;
+    height: 30px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border: none;
+    color: #fefae0;
+    background-color: #b65fa0;
+    font-weight: bold;
+}
+
+.otherButtons:hover {
+    width: 455px;
+    height: 30px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border: none;
+    color: #c4c0a8;
+    background-color: #853972;
+    font-weight: bold;
+}
+
 .listTexts {
     color: #956b42;
     list-style-type: none;
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    align-items: center;
+    margin-right: 7%;
+}
+
+.textAreas {
+    width: 450px;
+    height: 30px;
+    border-radius: 10px;
+    border-color: #956b42;
+    border-style: solid;
+}
+
+.textAreasTopText {
+    margin-top: 15px;
+    color: #956b42;
+    font-weight: 600;
+}
+
+.siteLogo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
 }

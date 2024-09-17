@@ -6,19 +6,56 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <link rel="icon" type="icon/png" href="img/icon.png">
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+    <script>
+        async function httpRequest() {
+            const name = document.getElementById('name').value;
+            const tempoPreparo = document.getElementById('tempoPreparo').value;
+            const custoAproximado = document.getElementById('custoAproximado').value;
+            const ingredientesArray = document.getElementById('ingrediente').value.split(',').map(ing => ing.trim());
+
+            const ingredientes = ingredientesArray.map(ing => ({
+                name: ing
+            }));
+
+
+            const ingredientesPromises = ingredientes.map(ingrediente =>
+                axios.post("http://localhost:3000/ingrediente", ingrediente)
+            );
+
+            const ingredientesResponses = await Promise.all(ingredientesPromises);
+
+            const ingredientesComId = ingredientesResponses.map(response => ({
+                _id: response.data._id,
+                name: response.data.name
+            }));
+
+            const Receita = {
+                name: name,
+                tempoPreparo: tempoPreparo,
+                custoAproximado: custoAproximado,
+                ingrediente: ingredientesComId
+            };
+
+            await axios.post("http://localhost:3000/receita", Receita);
+
+            alert("Receita registrada com sucesso!");
+        }
+    </script>
 </head>
 
 <body>
 
+    <img class="siteLogo" src="img/topSiteIcon.png">
     <div class="squareInformations">
         <label class="mainText">REGISTRAR RECEITA</label>
-        <input class="textInputs" placeholder="Nome">
-        <input class="textInputs" placeholder="Tempo de Preparo (em minutos)">
-        <input class="textInputs" placeholder="Custo aproximado (em reais)">
-        <input class="textInputs" placeholder="Ingredientes (separe por vírgula)">
-        <button class="registerButton">REGISTRAR</button>
+        <input id="name" class="textInputs" placeholder="Nome">
+        <input id="tempoPreparo" class="textInputs" placeholder="Tempo de Preparo (minutos)">
+        <input id="custoAproximado" class="textInputs" placeholder="Custo aproximado (R$)">
+        <input id="ingrediente" class="textInputs" placeholder="Ingredientes (separe por vírgula)">
+        <button onclick="httpRequest()" class="otherButtons">REGISTRAR</button>
         <a href="./myRecipes.html">
-            <button class="registerButton">VER MINHAS RECEITAS</button>
+            <button class="oneButton">VER MINHAS RECEITAS</button>
         </a>
     </div>
 
